@@ -579,7 +579,7 @@ reg delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\
 
 # Delete powershell history
 
-Remove-Item (Get-PSreadlineOption).HistorySavePath
+Remove-Item (Get-PSreadlineOption).HistorySavePath -ErrorAction SilentlyContinue
 
 # Deletes contents of recycle bin
 
