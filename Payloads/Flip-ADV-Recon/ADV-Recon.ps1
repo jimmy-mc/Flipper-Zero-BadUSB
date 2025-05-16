@@ -112,7 +112,7 @@ $email = Get-email
 
 #------------------------------------------------------------------------------------------------------------------------------------
 
-function Get-GeoLocation{
+<# function Get-GeoLocation{
 	try {
 	Add-Type -AssemblyName System.Device #Required to access System.Device.Location namespace
 	$GeoWatcher = New-Object System.Device.Location.GeoCoordinateWatcher #Create the required object
@@ -143,6 +143,41 @@ $GeoLocation = $GeoLocation -split " "
 $Lat = $GeoLocation[0].Substring(11) -replace ".$"
 
 $Lon = $GeoLocation[1].Substring(10) -replace ".$"
+#>
+
+function Get-GeoLocation {
+    try {
+        Add-Type -AssemblyName System.Device
+        $GeoWatcher = New-Object System.Device.Location.GeoCoordinateWatcher
+        $GeoWatcher.Start()
+
+        while (($GeoWatcher.Status -ne 'Ready') -and ($GeoWatcher.Permission -ne 'Denied')) {
+            Start-Sleep -Milliseconds 100
+        }
+
+        if ($GeoWatcher.Permission -eq 'Denied') {
+            return $null
+        } else {
+            return $GeoWatcher.Position.Location | Select-Object -ExpandProperty Latitude, Longitude
+        }
+    } catch {
+        return $null
+    }
+}
+
+try {
+    $GeoLocation = Get-GeoLocation
+} catch {
+    $GeoLocation = $null
+}
+
+if ($GeoLocation) {
+    $Lat = $GeoLocation.Latitude
+    $Lon = $GeoLocation.Longitude
+} else {
+    $Lat = "Unknown"
+    $Lon = "Unknown"
+}
 
 ############################################################################################################################################################
 
